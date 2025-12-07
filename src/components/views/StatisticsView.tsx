@@ -196,20 +196,12 @@ export function StatisticsView({ waterLevels, atmospheric }: StatisticsViewProps
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Volume moyen</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{waterStats.avgVolume.toFixed(3)} m³</p>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                 <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Volume max</p>
                 <p className="text-xl font-bold text-green-600">{waterStats.maxVolume.toFixed(3)} m³</p>
               </div>
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                 <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Volume min</p>
                 <p className="text-xl font-bold text-red-600">{waterStats.minVolume.toFixed(3)} m³</p>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Consommation</p>
-                <p className="text-xl font-bold text-cyan-600">{waterStats.consumption.toFixed(3)} m³</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 mt-4">

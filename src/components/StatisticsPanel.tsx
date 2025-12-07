@@ -137,7 +137,7 @@ export function StatisticsPanel({ waterLevels, atmospheric }: StatisticsPanelPro
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900 dark:to-red-800 rounded-lg p-4">
           <h4 className="text-xs font-medium text-red-900 dark:text-red-100 mb-1">Consommation totale</h4>
           <p className="text-2xl font-bold text-red-700 dark:text-red-300">{statistics.totalConsumption.toFixed(0)} L</p>
@@ -153,12 +153,6 @@ export function StatisticsPanel({ waterLevels, atmospheric }: StatisticsPanelPro
               <p className="text-xs text-green-600 dark:text-green-400 mt-1">Sur la période sélectionnée</p>
             </div>
           </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900 dark:to-orange-800 rounded-lg p-4">
-          <h4 className="text-xs font-medium text-orange-900 dark:text-orange-100 mb-1">Température</h4>
-          <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">{statistics.avgTemperature.toFixed(1)}°C</p>
-          <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">Min: {statistics.minTemperature.toFixed(1)}°C / Max: {statistics.maxTemperature.toFixed(1)}°C</p>
         </div>
       </div>
     </div>

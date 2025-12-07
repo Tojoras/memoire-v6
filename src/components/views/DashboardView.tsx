@@ -35,7 +35,45 @@ export function DashboardView({ latestWater, latestAtmospheric, waterLevels, atm
     return { consumption, rainRecovered };
   };
 
+  const calculateMonthlyStats = () => {
+    if (waterLevels.length === 0) {
+      return {
+        currentMonthConsumption: 0,
+        currentMonthRain: 0,
+        lastMonthConsumption: 0,
+        lastMonthRain: 0
+      };
+    }
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    const firstDayCurrentMonth = new Date(currentYear, currentMonth, 1);
+    const firstDayLastMonth = new Date(currentYear, currentMonth - 1, 1);
+    const lastDayLastMonth = new Date(currentYear, currentMonth, 0);
+    lastDayLastMonth.setHours(23, 59, 59, 999);
+
+    const currentMonthReadings = waterLevels.filter(level => {
+      const date = new Date(level.timestamp);
+      return date >= firstDayCurrentMonth;
+    });
+
+    const lastMonthReadings = waterLevels.filter(level => {
+      const date = new Date(level.timestamp);
+      return date >= firstDayLastMonth && date <= lastDayLastMonth;
+    });
+
+    return {
+      currentMonthConsumption: currentMonthReadings.reduce((sum, level) => sum + (level.water_consumed_liters || 0), 0),
+      currentMonthRain: currentMonthReadings.reduce((sum, level) => sum + (level.rain_recovered_liters || 0), 0),
+      lastMonthConsumption: lastMonthReadings.reduce((sum, level) => sum + (level.water_consumed_liters || 0), 0),
+      lastMonthRain: lastMonthReadings.reduce((sum, level) => sum + (level.rain_recovered_liters || 0), 0)
+    };
+  };
+
   const dailyStats = calculateDailyStats();
+  const monthlyStats = calculateMonthlyStats();
   const lastUpdateTime = latestWater ? new Date(latestWater.timestamp) : null;
 
   return (
@@ -101,7 +139,7 @@ export function DashboardView({ latestWater, latestAtmospheric, waterLevels, atm
                   </div>
                   <div className="border-t border-gray-200 dark:border-gray-600 pt-3">
                     <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Capacité libre</p>
-                    <p className="text-2xl font-bold text-green-600 dark:text-green-400">{(maxCapacity - (latestWater?.volume_m3 || 0)).toFixed(3)} m³</p>
+                    <p className="text-2xl font-bold text-green-600 dark:text-green-400">{Math.round((maxCapacity - (latestWater?.volume_m3 || 0)) * 1000) / 1000} m³</p>
                   </div>
                 </div>
               </div>
@@ -111,37 +149,6 @@ export function DashboardView({ latestWater, latestAtmospheric, waterLevels, atm
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className={`rounded-xl shadow-sm p-6 border transition ${
-          status.isRaining
-            ? 'bg-gradient-to-br from-blue-500 to-blue-600 border-blue-700'
-            : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700'
-        }`}>
-          <div className="flex items-center gap-3 mb-4">
-            <div className={`p-3 rounded-lg ${
-              status.isRaining ? 'bg-blue-700' : 'bg-blue-100'
-            }`}>
-              <CloudRain className={`w-6 h-6 ${
-                status.isRaining ? 'text-white' : 'text-blue-600'
-              }`} />
-            </div>
-            <div>
-              <h3 className={`text-sm font-medium ${
-                status.isRaining ? 'text-blue-100' : 'text-gray-600 dark:text-gray-400'
-              }`}>Pluie journalière</h3>
-              <p className={`text-2xl font-bold ${
-                status.isRaining ? 'text-white' : 'text-gray-900 dark:text-white'
-              }`}>
-                {status.dailyRainfallVolume.toFixed(1)} L
-              </p>
-            </div>
-          </div>
-          <div className={`text-xs ${
-            status.isRaining ? 'text-blue-100' : 'text-gray-500'
-          }`}>
-            {status.isRaining ? 'Volume important détecté' : 'Aucune pluie'}
-          </div>
-        </div>
-
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
           <div className="flex items-center gap-3 mb-4">
             <div className="bg-red-100 dark:bg-red-900 p-3 rounded-lg">
@@ -213,6 +220,74 @@ export function DashboardView({ latestWater, latestAtmospheric, waterLevels, atm
               hour: '2-digit',
               minute: '2-digit'
             })}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-lg">
+              <Droplets className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Consommation mois dernier</h3>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {monthlyStats.lastMonthConsumption.toFixed(0)} L
+              </p>
+            </div>
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            {new Date(new Date().getFullYear(), new Date().getMonth() - 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="bg-red-100 dark:bg-red-900 p-3 rounded-lg">
+              <Droplets className="w-6 h-6 text-red-600 dark:text-red-400" />
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Consommation mois en cours</h3>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {monthlyStats.currentMonthConsumption.toFixed(0)} L
+              </p>
+            </div>
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            {new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="bg-teal-100 dark:bg-teal-900 p-3 rounded-lg">
+              <Cloud className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Pluie récupérée mois dernier</h3>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {monthlyStats.lastMonthRain.toFixed(0)} L
+              </p>
+            </div>
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            {new Date(new Date().getFullYear(), new Date().getMonth() - 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
+              <Cloud className="w-6 h-6 text-green-600 dark:text-green-400" />
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Pluie récupérée mois en cours</h3>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {monthlyStats.currentMonthRain.toFixed(0)} L
+              </p>
+            </div>
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            {new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
           </div>
         </div>
       </div>

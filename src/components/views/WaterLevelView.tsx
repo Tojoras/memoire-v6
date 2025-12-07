@@ -196,22 +196,18 @@ export function WaterLevelView({ waterLevels, latestWater }: WaterLevelViewProps
                   {searchResult.volume_liters.toFixed(2)}
                 </p>
               </div>
-              {searchResult.water_consumed_liters !== undefined && searchResult.water_consumed_liters > 0 && (
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Eau consommée</p>
-                  <p className="text-3xl font-bold text-red-600">
-                    {searchResult.water_consumed_liters.toFixed(2)} L
-                  </p>
-                </div>
-              )}
-              {searchResult.rain_recovered_liters !== undefined && searchResult.rain_recovered_liters > 0 && (
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Pluie récupérée</p>
-                  <p className="text-3xl font-bold text-green-600">
-                    {searchResult.rain_recovered_liters.toFixed(2)} L
-                  </p>
-                </div>
-              )}
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Eau consommée</p>
+                <p className="text-3xl font-bold text-red-600">
+                  {(searchResult.water_consumed_liters || 0).toFixed(2)} L
+                </p>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Pluie récupérée</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {(searchResult.rain_recovered_liters || 0).toFixed(2)} L
+                </p>
+              </div>
             </div>
             <div className="bg-blue-100 dark:bg-blue-800/30 rounded-lg p-3 mt-4">
               <p className="text-xs text-gray-700 dark:text-gray-300 font-medium mb-1">
