@@ -232,7 +232,7 @@ export function WaterLevelView({ waterLevels, latestWater }: WaterLevelViewProps
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
         <div className="flex items-center gap-2 mb-4">
           <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Historique complet</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Historique de volume d'eau complet</h3>
         </div>
         <div className="overflow-y-auto max-h-[600px]">
           {waterLevels.length === 0 ? (
