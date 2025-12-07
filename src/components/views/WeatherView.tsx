@@ -134,7 +134,7 @@ export function WeatherView({ atmospheric, latestAtmospheric }: WeatherViewProps
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
         <div className="flex items-center gap-2 mb-4">
           <Wind className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Niveau de confort</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Surveillance de l’environnement physique de l’Arduino</h3>
         </div>
         <div className={`bg-${comfort.color}-50 border border-${comfort.color}-200 rounded-lg p-6 text-center`}>
           <p className={`text-3xl font-bold text-${comfort.color}-700 mb-2`}>{comfort.text}</p>
